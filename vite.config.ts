@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import preact from '@preact/preset-vite';
-import fs from 'fs';
-import path from 'path';
+// import fs from 'fs';
+// import path from 'path';
 
 export default defineConfig({
   base: '/image-on-camera/',
