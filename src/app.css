@@ -1,104 +1,114 @@
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* src/app.css */
+:root {
+  --primary: #6C63ff;
+  --secondary: #ff6584;
+  --bg-start: #ece9f7; /* soft lavender */
+  --bg-end: #f6fcff;   /* near white cyan */
+  --text: #333;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
+/* Reset and full viewport flex centering */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  /* gradient background for a more attractive look */
+  background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.preact:hover {
-  filter: drop-shadow(0 0 2em #673ab8aa);
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
+/* Main app container */
 .app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
   padding: 1rem;
-  font-family: sans-serif;
+  background: rgba(255, 255, 255, 0.8); /* semi-transparent white for contrast */
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
 .controls {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.btn,
+.file-input {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.btn:hover,
+.file-input:hover {
+  background: var(--secondary);
+  transform: translateY(-2px);
+}
+
+.slider-label {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  font-size: 0.9rem;
 }
 
-.controls label {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.9rem;
+.slider-label input {
+  margin-top: 0.3rem;
+  width: 120px;
 }
 
 .video-container {
   position: relative;
   width: 100%;
-  max-width: 600px;
-  /* ajústalo a tu gusto */
-  margin: 0 auto;
-  background: black;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  margin-bottom: 1.5rem;
 }
 
 .camera {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform-origin: center center;
-  pointer-events: none;
-  /* para que no interfiera con toques o clicks */
-}
-
-/* src/app.css */
-.app {
-  padding: 1rem;
-  font-family: sans-serif;
-}
-
-.controls {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.controls label {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.9rem;
-}
-
-.video-container {
-  position: relative;
+.camera-placeholder {
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  background: black;
-  overflow: hidden;
-}
-
-.camera {
-  width: 100%;
-  height: auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 1rem;
 }
 
 .overlay {
@@ -107,7 +117,29 @@
   left: 50%;
   transform-origin: center center;
   touch-action: none;
-  /* importante para gestos */
   user-select: none;
   pointer-events: all;
+}
+
+.app-footer {
+  margin-top: auto;
+  padding: 1rem;
+  font-size: 0.85rem;
+  color: #666;
+  text-align: center;
+  width: 100%;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .app-header h1 {
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+  }
+  .controls {
+    gap: 0.5rem;
+  }
+  .slider-label input {
+    width: 100px;
+  }
 }

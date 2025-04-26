@@ -1,3 +1,8 @@
+// src/app.tsx
+/**
+ * Camera Overlay App
+ * Built by AsterionDev
+ */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import interact from 'interactjs';
 import './app.css';
@@ -14,8 +19,11 @@ export function App() {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [cameraStarted, setCameraStarted] = useState<boolean>(false);
 
-  // Función para iniciar cámara bajo demanda
   const startCamera = async () => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      alert('getUserMedia no disponible. Sirve en HTTPS o localhost.');
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'environment' },
@@ -28,11 +36,12 @@ export function App() {
       setCameraStarted(true);
     } catch (err) {
       console.error('Error al iniciar cámara:', err);
+      alert('Error al iniciar cámara: ' + err);
     }
   };
 
-  // Limpieza de la cámara cuando el componente se desmonta o reinicia cámara
   useEffect(() => {
+    // cleanup
     return () => {
       if (videoRef.current?.srcObject) {
         (videoRef.current.srcObject as MediaStream)
@@ -42,7 +51,6 @@ export function App() {
     };
   }, []);
 
-  // Carga imagen
   const handleImageUpload = (e: Event) => {
     const input = e.target as HTMLInputElement;
     if (input.files?.[0]) {
@@ -52,7 +60,6 @@ export function App() {
     }
   };
 
-  // Toggle pantalla completa
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
     if (!document.fullscreenElement) {
@@ -62,38 +69,43 @@ export function App() {
     }
   };
 
-  // Configura Interact.js para arrastre y gestos
   useEffect(() => {
     if (!overlayRef.current) return;
-
     interact(overlayRef.current)
       .draggable({
         listeners: {
           move(event) {
-            setOffset((prev) => ({ x: prev.x + event.dx, y: prev.y + event.dy }));
-          },
-        },
+            setOffset(prev => ({
+              x: prev.x + event.dx,
+              y: prev.y + event.dy
+            }));
+          }
+        }
       })
       .gesturable({
         listeners: {
           move(event) {
-            setScale((s) => s * (1 + event.ds));
-            setRotation((r) => r + event.da);
-          },
-        },
+            setScale(s => s * (1 + event.ds));
+            setRotation(r => r + event.da);
+          }
+        }
       });
   }, [imageSrc]);
 
   return (
     <div className="app">
-      <h1>Camera Overlay App</h1>
+      <header className="app-header">
+        <h1>Camera Overlay App</h1>
+      </header>
 
       <div className="controls">
         {!cameraStarted && (
-          <button onClick={startCamera}>Permitir Cámara</button>
+          <button className="btn" onClick={startCamera}>
+            Permitir Cámara
+          </button>
         )}
-        <input type="file" accept="image/*" onChange={handleImageUpload} />
-        <label>
+        <input className="file-input" type="file" accept="image/*" onChange={handleImageUpload} />
+        <label className="slider-label">
           Opacidad
           <input
             type="range"
@@ -104,7 +116,7 @@ export function App() {
             onInput={(e) => setOpacity(parseFloat((e.target as HTMLInputElement).value))}
           />
         </label>
-        <label>
+        <label className="slider-label">
           Escala
           <input
             type="range"
@@ -115,7 +127,7 @@ export function App() {
             onInput={(e) => setScale(parseFloat((e.target as HTMLInputElement).value))}
           />
         </label>
-        <label>
+        <label className="slider-label">
           Rotación
           <input
             type="range"
@@ -126,21 +138,16 @@ export function App() {
             onInput={(e) => setRotation(parseFloat((e.target as HTMLInputElement).value))}
           />
         </label>
-        <button onClick={toggleFullscreen}>Pantalla Completa</button>
+        <button className="btn" onClick={toggleFullscreen}>
+          Pantalla Completa
+        </button>
       </div>
 
       <div className="video-container" ref={containerRef}>
-        <video
-          ref={videoRef}
-          playsInline
-          muted
-          className="camera"
-          style={{ display: cameraStarted ? 'block' : 'none' }}
-        />
-        {!cameraStarted && (
-          <div className="camera-placeholder">
-            <p>La cámara está inactiva.</p>
-          </div>
+        {cameraStarted ? (
+          <video ref={videoRef} playsInline muted className="camera" />
+        ) : (
+          <div className="camera-placeholder">La cámara está inactiva.</div>
         )}
         {imageSrc && (
           <img
@@ -149,16 +156,16 @@ export function App() {
             className="overlay"
             style={{
               opacity,
-              transform: `
-                translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px))
-                scale(${scale})
-                rotate(${rotation}deg)
-              `,
+              transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${scale}) rotate(${rotation}deg)`,
             }}
             alt="Overlay"
           />
         )}
       </div>
+
+      <footer className="app-footer">
+        Built with ❤️ by <strong>AsterionDev</strong>
+      </footer>
     </div>
   );
 }
