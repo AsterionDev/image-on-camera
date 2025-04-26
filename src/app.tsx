@@ -1,8 +1,4 @@
-// src/app.tsx
-/**
- * Camera Overlay App
- * Built by AsterionDev
- */
+// src/App.tsx
 import { useEffect, useRef, useState } from 'preact/hooks';
 import interact from 'interactjs';
 import './app.css';
@@ -41,7 +37,6 @@ export function App() {
   };
 
   useEffect(() => {
-    // cleanup
     return () => {
       if (videoRef.current?.srcObject) {
         (videoRef.current.srcObject as MediaStream)
@@ -77,18 +72,18 @@ export function App() {
           move(event) {
             setOffset(prev => ({
               x: prev.x + event.dx,
-              y: prev.y + event.dy
+              y: prev.y + event.dy,
             }));
-          }
-        }
+          },
+        },
       })
       .gesturable({
         listeners: {
           move(event) {
             setScale(s => s * (1 + event.ds));
             setRotation(r => r + event.da);
-          }
-        }
+          },
+        },
       });
   }, [imageSrc]);
 
@@ -104,7 +99,12 @@ export function App() {
             Permitir Cámara
           </button>
         )}
-        <input className="file-input" type="file" accept="image/*" onChange={handleImageUpload} />
+        <input
+          className="file-input"
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+        />
         <label className="slider-label">
           Opacidad
           <input
@@ -113,7 +113,7 @@ export function App() {
             max="1"
             step="0.01"
             value={opacity}
-            onInput={(e) => setOpacity(parseFloat((e.target as HTMLInputElement).value))}
+            onInput={e => setOpacity(parseFloat((e.target as HTMLInputElement).value))}
           />
         </label>
         <label className="slider-label">
@@ -124,7 +124,7 @@ export function App() {
             max="3"
             step="0.1"
             value={scale}
-            onInput={(e) => setScale(parseFloat((e.target as HTMLInputElement).value))}
+            onInput={e => setScale(parseFloat((e.target as HTMLInputElement).value))}
           />
         </label>
         <label className="slider-label">
@@ -135,7 +135,7 @@ export function App() {
             max="360"
             step="1"
             value={rotation}
-            onInput={(e) => setRotation(parseFloat((e.target as HTMLInputElement).value))}
+            onInput={e => setRotation(parseFloat((e.target as HTMLInputElement).value))}
           />
         </label>
         <button className="btn" onClick={toggleFullscreen}>
@@ -144,9 +144,14 @@ export function App() {
       </div>
 
       <div className="video-container" ref={containerRef}>
-        {cameraStarted ? (
-          <video ref={videoRef} playsInline muted className="camera" />
-        ) : (
+        <video
+          ref={videoRef}
+          playsInline
+          muted
+          className="camera"
+          style={{ display: cameraStarted ? 'block' : 'none' }}
+        />
+        {!cameraStarted && (
           <div className="camera-placeholder">La cámara está inactiva.</div>
         )}
         {imageSrc && (
